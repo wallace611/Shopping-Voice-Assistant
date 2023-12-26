@@ -1,1 +1,1 @@
-from source.asso_rule import module
+from source.text_analyzing import analyzing_module
