@@ -1,1 +1,1 @@
-from source.text_analyzing import analyzing_module
+from source.text_analyzing.analyzing import analyzing_module

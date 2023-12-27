@@ -21,6 +21,15 @@ def calculate_confidence(args):
     else:
         rules = 0
     for s in subsets:
+        def has_dpercent(s):
+                for idx, x in enumerate(s):
+                    if x.startswith('%') and x.endswith('%'):
+                        return idx
+        # if %% in s, rule[%%] = %%
+        idx = has_dpercent(s)
+        if idx is not None:
+            rules[(s[idx],)] = (set((s[idx],)), 1.0)
+            continue
         if len(s) > 0:
             confidence = float(itemSetSup / supportCache.get(s, 0))
             if confidence >= minConf:
@@ -60,14 +69,26 @@ def caluculate_association_rule(freqItemSet, minConf, detailed_result=False):
     for itemSet, itemSetSup in freqItemSet:
         subsets = powerset(itemSet)
         for s in subsets:
+            # there is %% in s
+            def has_dpercent(s):
+                for idx, x in enumerate(s):
+                    if x.startswith('%') and x.endswith('%'):
+                        return idx
+            idx = has_dpercent(s)
+            
+            if idx is not None:
+                rules[(s[idx],)] = (set((s[idx],)), 1.0)
+                continue
             if len(s) > 0:
                 confidence = float(itemSetSup / supportCache.get(s, 0))
                 if confidence >= minConf:
                     if detailed_result:
                         temp = list(set(itemSet).difference(s))
-                        if (len(temp) == 1):
-                            if ('%' in temp[0]):
-                                rules[s] =  (set(temp), confidence)
+                        idx = None
+                        idx = has_dpercent(temp)
+                        if idx is not None:
+                            temp = (temp[idx],)
+                            rules[s] =  (set(temp), confidence)
                     else:
                         rules += 1
     if detailed_result:

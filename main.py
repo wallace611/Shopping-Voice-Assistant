@@ -1,4 +1,8 @@
 from source import analyzing_module
 
-input_str = ""
-print(analyzing_module.read(input_str))
+
+if __name__ == '__main__':
+    module = analyzing_module()
+    module.training()
+    input_str = "老哥幫個忙"
+    print(module.get_relative(input_str, 0))

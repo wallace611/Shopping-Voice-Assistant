@@ -1,7 +1,7 @@
 from . import _association_rule
 from . import _freq_item_set
 import time
-import os
+import re
 
 FIS_time = 0.0
 aso_time = 0.0
@@ -12,10 +12,10 @@ def fp_growth_from_file(args):
     if parallel != 'always' and parallel != 'never':
         parallel = 'auto'
         
-    print('\nSettings:\n')
+    print('Settings:')
     for item in args.items():
         print('\t' + str(item).strip('()').replace("'", '').replace(',', ':'))
-    print('\nTimes:\n')
+    print('Times:')
     
 
     global FIS_time
@@ -25,7 +25,7 @@ def fp_growth_from_file(args):
     # start FIS_time and overall_time
     FIS_time = overall_time = time.time()
     
-    data = get_from_file(file_name=name)
+    data = get_from_file(data_path=name)
     minimum_freq = int(minimum_support * len(data) + 1)
 
     freq_item = []
@@ -36,7 +36,7 @@ def fp_growth_from_file(args):
     # end FIS_time
     FIS_time = time.time() - FIS_time
 
-    print('\tfrequency item set: ', FIS_time, 'seconds')
+    print('frequency item set: ', FIS_time, 'sec')
 
     #start aso_time
     aso_time = time.time()
@@ -52,17 +52,16 @@ def fp_growth_from_file(args):
     aso_time = end_time - aso_time
     overall_time = end_time - overall_time
     
-    print('\tassciation rules: ', aso_time, 'seconds')
-    print('\toverall time: ', overall_time, 'seconds')
+    print('assciation rules: ', aso_time, 'sec')
+    print('overall time: ', overall_time, 'sec')
     
     return (freq_item, get_each_number(freq_item)) if detailed_result else get_each_number(freq_item), rules
 
-def get_from_file(file_name):
-    data_path = os.path.join(os.path.dirname(__file__), '..\\training_data\\' + file_name)
+def get_from_file(data_path):
     data = []
     for line in open(data_path).readlines():
-        temp = line.strip('\n').split(' ')
-        data.append([*temp[0], temp[1]])
+        line = re.sub(r'\d+', lambda x: f'#number#', line)
+        data.append(re.findall(r'#+[number]+#|%+[\w\d]+%|[\w]', line))
 
     return data
 
@@ -74,8 +73,3 @@ def get_each_number(freq_item_list):
         else:
             freq_item_set[len(item_set)] = 1
     return freq_item_set
-
-def get_time():
-    yield "frequency item set:", FIS_time
-    yield "association rule:", aso_time
-    yield "overall time:", overall_time
