@@ -2,6 +2,7 @@ from .mining_module import _mining_module as mining
 from itertools import combinations
 from collections import defaultdict
 import threading
+import json
 import os
 import re
 
@@ -9,7 +10,7 @@ class analyzing_module:
     def __init__(self) -> None:
         self.args = {
             "data file": os.path.dirname(__file__) + "\\training_module\\" + "module_data.dat",
-            "minimum support": 0.005,
+            "minimum support": 0.0,
             "minimum confidence": 0.8,
             "limit": 5,
             "write file": True,
@@ -46,10 +47,11 @@ class analyzing_module:
         
         module_data_path = os.path.dirname(__file__) + "\\training_module\\module_data.dat"
         with open(module_data_path, 'a') as module_file:
-            count = 0
+            learned = [0, len(data_stack)]
+            counter = 0
             while (len(data_stack) > 0):
-                self.rule_list = self.mine(self.args, count)
-                count += 1
+                self.rule_list = self.mine(self.args, counter)
+                counter += 1
                 line = data_stack[len(data_stack) - 1]
                 data_stack.pop()
                 try:
@@ -58,11 +60,13 @@ class analyzing_module:
                 except:
                     continue
                 
-                print("\nAI answer is {}, target is {}\n".format(None if len(res) <= 0 else res[0] , target))
-                if (len(res) <= 0 or res[0] != target):
+                print("\nAI answer is {} {}, target is {}\n".format(None if len(res) <= 0 else res[0], None if len(res) <= 0 else res[1], target))
+                if (len(res) <= 0 or res[0] != target) or res[1] < 0.7:
                     module_file.write(cmd + ' ' + target + '\n')
+                    learned[0] += 1
                     
-        self.rule_list = self.mine(self.args, count)
+        self.rule_list = self.mine(self.args, counter)
+        print("learn {} statement from {}\n".format(learned[0], learned[1]))
 
 
     def mine(self, args, tried=0):
@@ -94,3 +98,4 @@ class analyzing_module:
         file_to_write = open(path, 'w')
         for rules in association_rule[0].items():
             file_to_write.write(str(rules).strip('[]') + '\n')
+            
