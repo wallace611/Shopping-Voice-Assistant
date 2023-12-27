@@ -16,7 +16,10 @@ class analyzing_module:
             "write file": True,
             "parallel processing": "never"
         }
-        self.rule_list = self.mine(self.args)
+        success = self.read_module()
+        if not success:
+            print("fail to find module, mining module_data.dat to construct rule_list")
+            self.rule_list = self.mine(self.args)
     
     def get_relative(self, cmd, rank=1):
         cmd = re.sub(r'\d+', lambda x: f'#number#', cmd)
@@ -25,7 +28,7 @@ class analyzing_module:
         for k in range(1, len(cmd) + 1):
             for i in tuple([*combinations(cmd, k)]):
                 try:
-                    res[str(self.rule_list[i][0]).strip('{}').strip('\'')] += self.rule_list[i][1]
+                    res[str(self.rule_list[i][0]).strip('[]').strip('\'')] += self.rule_list[i][1]
                 except:
                     continue
         res = {k: v for k, v in sorted(res.items(), key=lambda item: item[1], reverse=True)}
@@ -65,8 +68,10 @@ class analyzing_module:
                     module_file.write(cmd + ' ' + target + '\n')
                     learned[0] += 1
                     
-        self.rule_list = self.mine(self.args, counter)
+        self.rule_list = self.mine(self.args, "sum up")
         print("learn {} statement from {}\n".format(learned[0], learned[1]))
+        
+        self.save_module(self.rule_list)
 
 
     def mine(self, args, tried=0):
@@ -74,8 +79,6 @@ class analyzing_module:
         freq, rule = mining.fp_growth_from_file(args)
         
         if args["write file"]:
-            thread_write_file = threading.Thread(target=self.save_module, args=(rule,))
-            thread_write_file.start()
             freq = freq[1]
             rule_d = rule[0]
             rule = rule[1]
@@ -83,19 +86,24 @@ class analyzing_module:
         print("find association rules: {}".format(rule))
 
         print("#{} mining end".format(tried))
-        try:
-            thread_write_file.join()
-            print('done :D')
-        except:
-            print('done!')
-        
+        print('done :D')
         return rule_d
 
     def save_module(self, association_rule):
         print("\nwriting file...")
-        
-        path = os.path.join(os.path.dirname(__file__), '..\\..\\results\\module.dat')
-        file_to_write = open(path, 'w')
-        for rules in association_rule[0].items():
-            file_to_write.write(str(rules).strip('[]') + '\n')
             
+        asso_to_json = [[[s for s in rules[0]],[v for v in rules[1]]] for rules in association_rule.items()]
+        json_obj = json.dumps(asso_to_json)
+        path = os.path.join(os.path.dirname(__file__), '..\\..\\rule_module\\module.json')
+        with open(path, 'w') as write_to_json:
+            write_to_json.write(json_obj)
+            
+    def read_module(self):
+        path = os.path.join(os.path.dirname(__file__), '..\\..\\rule_module\\module.json')
+        with open(path, 'r') as read_json:
+            try:
+                json_to_asso = json.loads(read_json.read())
+                self.rule_list = {tuple(rules[0]):tuple(rules[1]) for rules in json_to_asso}
+            except:
+                return False
+        return True

@@ -77,7 +77,7 @@ def caluculate_association_rule(freqItemSet, minConf, detailed_result=False):
             idx = has_dpercent(s)
             
             if idx is not None:
-                rules[(s[idx],)] = (set((s[idx],)), 1.0)
+                rules[(s[idx],)] = (list((s[idx],)), 1.0)
                 continue
             if len(s) > 0:
                 confidence = float(itemSetSup / supportCache.get(s, 0))
@@ -88,7 +88,7 @@ def caluculate_association_rule(freqItemSet, minConf, detailed_result=False):
                         idx = has_dpercent(temp)
                         if idx is not None:
                             temp = (temp[idx],)
-                            rules[s] =  (set(temp), confidence)
+                            rules[s] =  (list(temp), confidence)
                     else:
                         rules += 1
     if detailed_result:
