@@ -1,1 +1,2 @@
 from source.text_analyzing.analyzing import analyzing_module
+from source.voice_helper import voice_processer
