@@ -7,7 +7,7 @@ FIS_time = 0.0
 aso_time = 0.0
 overall_time = 0.0
 
-def fp_growth_from_file(args):
+def fp_growth_from_file(args, data=None):
     name, minimum_support, minimum_confidence, limits, detailed_result, parallel = args.values()
     if parallel != 'always' and parallel != 'never':
         parallel = 'auto'
@@ -25,7 +25,11 @@ def fp_growth_from_file(args):
     # start FIS_time and overall_time
     FIS_time = overall_time = time.time()
     
-    data = get_from_file(data_path=name)
+    if data is None:
+        data = get_from_file(data_path=name)
+        
+    data = translate(data)
+    
     minimum_freq = int(minimum_support * len(data) + 1)
 
     freq_item = []
@@ -60,9 +64,16 @@ def fp_growth_from_file(args):
 def get_from_file(data_path):
     data = []
     for line in open(data_path).readlines():
+        data.append(line)
+
+    return data
+
+def translate(data_lines):
+    data = []
+    for line in data_lines:
         line = re.sub(r'\d+', lambda x: f'#number#', line)
         data.append(re.findall(r'#+[number]+#|%+[\w\d]+%|[\w]', line))
-
+        
     return data
 
 def get_each_number(freq_item_list):
