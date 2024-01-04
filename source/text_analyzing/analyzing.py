@@ -34,7 +34,7 @@ class analyzing_module:
         cmd = re.sub(r'\d+', lambda x: f'#number#', cmd)
         cmd = re.findall(r'#+[number]+#|%+[\w\d]+%|[\w]', cmd)
         res = defaultdict(int)
-        max_length = len(cmd) if len(cmd) <= self.args["limit"] else self.args["limit"]
+        max_length = len(cmd) + 1 if len(cmd) <= self.args["limit"] else self.args["limit"]
         for k in range(1, max_length):
             for i in tuple([*combinations(cmd, k)]):
                 try:
@@ -106,6 +106,7 @@ class analyzing_module:
                     print("failed, I thought it is {}".format(res))
                     print("start training...")
                     self.rule_list = self._mine(counter, data=_module_data)
+                    data_stack.insert(0, line + '\n')
             else:
                 # same, it remember
                 print("I've learned this")
