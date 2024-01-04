@@ -35,6 +35,9 @@ if __name__ == '__main__':
         command = module.get_relative(input_line, 0)
         print(command)
         
-        command = command[0]
+        try:
+            command = command[0]
+        except:
+            command = '%donothing%'
         
         execute_command(command, input_line)
