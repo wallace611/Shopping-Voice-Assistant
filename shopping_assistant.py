@@ -8,7 +8,8 @@ budget = 0
 
 
 def execute_command(cmd, input_line):
-    pass
+    if cmd == '%close':
+        exit()
 
 
 if __name__ == '__main__':
