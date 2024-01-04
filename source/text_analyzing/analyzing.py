@@ -6,18 +6,24 @@ import os
 import re
 
 class analyzing_module:
-    def __init__(self):
+    def __init__(self, get_from_json=True):
         self.args = {
             "data file": os.path.dirname(__file__) + "\\training\\" + "module_data.dat",
             "minimum support": 0.0,
             "minimum confidence": 0.8,
             "limit": 5,
             "write file": True,
-            "parallel processing": "never"
+            "parallel processing": "auto"
         }
         self.rule_list = {}
-        # try to get the module from module.json
-        success = self._read_module()
+        success = True
+        if get_from_json:
+            # try to get the module from module.json
+            success = self._read_module()
+        else:
+            print("mining module_data.dat to construct rule_list")
+            self.rule_list = self._mine()
+            self._save_module()
         if not success:
             # failed, mine the module from module_data.dat
             print("fail to find module, mining module_data.dat to construct rule_list")
@@ -95,7 +101,8 @@ class analyzing_module:
                     learned[0] += 1
                 
                     # training
-                    print("failed, start training...")
+                    print("failed, I thought it was {}".format(res))
+                    print("start training...")
                     self.rule_list = self._mine(counter, data=_module_data)
             else:
                 # same, it remember
@@ -112,7 +119,7 @@ class analyzing_module:
                 module_file.write(line + '\n')
 
 
-    def _mine(self, tried=0, data=None):
+    def _mine(self, tried='', data=None):
         print("#{} mining start".format(tried))
         freq, rule = mining.fp_growth_from_file(self.args, data=data)
         
@@ -140,10 +147,13 @@ class analyzing_module:
             
     def _read_module(self):
         path = os.path.join(os.path.dirname(__file__), 'module_temp\\association_rule_module.json')
-        with open(path, 'r') as read_json:
-            try:
-                json_to_asso = json.loads(read_json.read())
-                self.rule_list = {tuple(rules[0]):tuple(rules[1]) for rules in json_to_asso}
-            except:
-                return False
-        return True
+        try:
+            with open(path, 'r') as read_json:
+                try:
+                    json_to_asso = json.loads(read_json.read())
+                    self.rule_list = {tuple(rules[0]):tuple(rules[1]) for rules in json_to_asso}
+                except:
+                    return False
+            return True
+        except:
+            return False

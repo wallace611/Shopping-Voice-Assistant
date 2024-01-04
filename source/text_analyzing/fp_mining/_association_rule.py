@@ -17,7 +17,7 @@ def calculate_confidence(args):
     itemSet, itemSetSup, minConf, supportCache, detailed_result = args
     subsets = powerset(itemSet)
     if detailed_result:
-        rules = []
+        rules = defaultdict()
     else:
         rules = 0
     for s in subsets:
@@ -28,15 +28,24 @@ def calculate_confidence(args):
         # if %% in s, rule[%%] = %%
         idx = has_dpercent(s)
         if idx is not None:
-            rules[(s[idx],)] = (set((s[idx],)), 1.0)
+            rules[(s[idx],)] = (list((s[idx],)), 1.0)
             continue
         if len(s) > 0:
-            confidence = float(itemSetSup / supportCache.get(s, 0))
-            if confidence >= minConf:
-                if detailed_result:
-                    rules.append([set(s), set(set(itemSet).difference(s)), confidence])
-                else:
-                    rules += 1
+            if len(s) > 0:
+                try:
+                    confidence = float(itemSetSup / supportCache.get(s, 0))
+                    if confidence >= minConf:
+                        if detailed_result:
+                            temp = list(set(itemSet).difference(s))
+                            idx = None
+                            idx = has_dpercent(temp)
+                            if idx is not None:
+                                temp = (temp[idx],)
+                                rules[s] =  (list(temp), confidence)
+                        else:
+                            rules += 1
+                except:
+                    continue
     return rules
 
 def caluculate_association_rule_parallel(freqItemSet, minConf, detailed_result=False):
@@ -51,9 +60,9 @@ def caluculate_association_rule_parallel(freqItemSet, minConf, detailed_result=F
     pool.join()
 
     if detailed_result:
-        rules = []
+        rules = defaultdict()
         for result in results:
-            rules.extend(result)
+            rules.update(result)
         rules = (rules, len(rules))
     else:
         rules = sum(results)

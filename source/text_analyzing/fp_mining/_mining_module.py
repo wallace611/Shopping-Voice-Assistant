@@ -49,6 +49,7 @@ def fp_growth_from_file(args, data=None):
     if (len(freq_item) < 400000 and parallel == 'auto') or parallel == 'never':
         rules = _association_rule.caluculate_association_rule(freq_item, minimum_confidence, detailed_result)
     else:
+        print("do parallel association rule")
         rules = _association_rule.caluculate_association_rule_parallel(freq_item, minimum_confidence, detailed_result)
     
     # end all the others timers
