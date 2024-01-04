@@ -4,7 +4,6 @@ import pyttsx3
 class voice_processer:
     def __init__(self) -> None:
         self.sr = sr.Recognizer()
-        self.engine = pyttsx3.init()
     
     def listening(self):
         with sr.Microphone() as audio_source:
@@ -19,6 +18,7 @@ class voice_processer:
                 
             return text
         
-    def say(self, line):
-        self.engine.say(line)
-        self.engine.runAndWait()
+def say(line):
+    engine = pyttsx3.init()
+    engine.say(line)
+    engine.runAndWait()
