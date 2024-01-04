@@ -50,6 +50,8 @@ class analyzing_module:
         return res
 
     def training(self):
+        print("mining module_data.dat to construct rule_list")
+        self.rule_list = self._mine()
         # reading training data to a stack
         training_data_path = os.path.dirname(__file__) + "\\training\\training.dat"
         data_stack = []
@@ -101,7 +103,7 @@ class analyzing_module:
                     learned[0] += 1
                 
                     # training
-                    print("failed, I thought it was {}".format(res))
+                    print("failed, I thought it is {}".format(res))
                     print("start training...")
                     self.rule_list = self._mine(counter, data=_module_data)
             else:
