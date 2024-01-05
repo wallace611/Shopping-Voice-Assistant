@@ -34,7 +34,7 @@ def calculate_confidence(args):
             if len(s) > 0:
                 try:
                     confidence = float(itemSetSup / supportCache.get(s, 0))
-                    if confidence >= minConf:
+                    if confidence >= minConf and confidence <= 1.0:
                         if detailed_result:
                             temp = list(set(itemSet).difference(s))
                             idx = None

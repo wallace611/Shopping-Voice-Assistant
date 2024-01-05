@@ -9,7 +9,7 @@ class analyzing_module:
     def __init__(self, get_from_json=True):
         self.args = {
             "data file": os.path.dirname(__file__) + "\\training\\" + "module_data.dat",
-            "minimum support": 0.0,
+            "minimum support": 0.01,
             "minimum confidence": 0.8,
             "limit": 5,
             "write file": True,
