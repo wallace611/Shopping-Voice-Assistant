@@ -64,7 +64,7 @@ def fp_growth_from_file(args, data=None):
 
 def get_from_file(data_path):
     data = []
-    for line in open(data_path).readlines():
+    for line in open(data_path, encoding='utf-8').readlines():
         data.append(line)
 
     return data

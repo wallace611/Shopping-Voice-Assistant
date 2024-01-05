@@ -51,5 +51,8 @@ if __name__ == '__main__':
             command = command[0]
         except:
             command = ('%donothing%', 1.0)
+            
+        if command[1] < 0.5:
+            command = ('%donothing%', 1.0)
         
         execute_command(command[0], input_line)

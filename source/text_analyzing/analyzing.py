@@ -55,7 +55,7 @@ class analyzing_module:
         # reading training data to a stack
         training_data_path = os.path.dirname(__file__) + "\\training\\training.dat"
         data_stack = []
-        with open(training_data_path, 'r+') as training_file:
+        with open(training_data_path, 'r+', encoding='utf-8') as training_file:
             for line in training_file.readlines():
                 data_stack.append(line)
             data_stack.reverse()
@@ -64,7 +64,7 @@ class analyzing_module:
         
         # open module data
         module_data_path = os.path.dirname(__file__) + "\\training\\module_data.dat"
-        with open(module_data_path, 'r') as module_file:
+        with open(module_data_path, 'r', encoding='utf-8') as module_file:
             # get the data in module_file
             _module_data = [line.strip('\n') for line in module_file.readlines()]
         learned = [0, 0, len(data_stack)] # the tuple shows that how many training data was learned
@@ -117,7 +117,7 @@ class analyzing_module:
         
         self._save_module()
         
-        with open(module_data_path, 'w') as module_file:
+        with open(module_data_path, 'w', encoding='utf-8') as module_file:
             for line in _module_data:
                 module_file.write(line + '\n')
 
@@ -143,7 +143,7 @@ class analyzing_module:
         asso_to_json = [[[s for s in rules[0]],[v for v in rules[1]]] for rules in self.rule_list.items()]
         json_obj = json.dumps(asso_to_json)
         path = os.path.join(os.path.dirname(__file__), 'module_temp\\association_rule_module.json')
-        with open(path, 'w') as write_to_json:
+        with open(path, 'w', encoding='utf-8') as write_to_json:
             write_to_json.write(json_obj)
             
         print("done!")
@@ -151,7 +151,7 @@ class analyzing_module:
     def _read_module(self):
         path = os.path.join(os.path.dirname(__file__), 'module_temp\\association_rule_module.json')
         try:
-            with open(path, 'r') as read_json:
+            with open(path, 'r', encoding='utf-8') as read_json:
                 try:
                     json_to_asso = json.loads(read_json.read())
                     self.rule_list = {tuple(rules[0]):tuple(rules[1]) for rules in json_to_asso}
