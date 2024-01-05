@@ -1,11 +1,13 @@
 from source import analyzing_module
-from source import voice_processer
 from source.voice_helper import *
+from source.util import *
 from collections import defaultdict
 import threading
 
-shopping_cart = defaultdict()
+# shopping_cart[commodiy_name] = (price, quantity)
+shopping_cart = defaultdict(tuple) 
 budget = 0
+discount = 0.0
 
 
 def execute_command(cmd, input_line):
@@ -13,14 +15,40 @@ def execute_command(cmd, input_line):
         say("好挖再見")
         exit()
         
-    if cmd == '%call%':
+    elif cmd == '%call%':
         say("叫我幹啥勒")
         
-    if cmd == '%donothing%':
-        say("我聽不懂謝謝")
-        
-    if cmd == '%swear%':
+    elif cmd == '%swear%':
         say("很兇喔老哥")
+        
+    elif cmd == '%add_to_cart%':
+        pass
+        
+    elif cmd == '%remove_from_cart%	':
+        pass
+        
+    elif cmd == '%sum_price%':
+        pass
+        
+    elif cmd == '%clear_cart%':
+        shopping_cart.clear()
+        say("購物車空了")
+        
+    elif cmd == '%discount%':
+        pass
+        
+    elif cmd == '%final_price%':
+        pass
+        
+    elif cmd == '%set_budget%':
+        pass
+        
+    elif cmd == '%list_commodity%':
+        for items in shopping_cart.items():
+            print("{}, {}個, {}元".format(items.count, items.index[0], items.index[1]))
+        
+    else:
+        say("我聽不懂謝謝")
 
 
 if __name__ == '__main__':
