@@ -13,16 +13,9 @@ if __name__ == '__main__':
         
         # keep detecting audio input
         say('我在聽')
-        input_line = None
-        while input_line == None:
-            # input_line will be what the user said
-            # if there's no audio input then input_line will be None
-            input_line = voice.listening()
-            if input_line == None:
-                print('say something')
+        input_line = input()
         
         input_line = chinese_to_number(input_line)
-        print(input_line)
         # analyze the commend corresponding to the input_line
         command = module.get_relative(input_line, 0)
         print(command)
@@ -30,9 +23,9 @@ if __name__ == '__main__':
         try:
             command = command[0]
         except:
-            command = ('%donothing%', 1.0)
+            command = ('%donothing%', 0.0)
             
         if command[1] < 0.5:
-            command = ('%donothing%', 1.0)
+            command = ('%donothing%', 0.0)
         
         execute_command(command[0], input_line, cart)

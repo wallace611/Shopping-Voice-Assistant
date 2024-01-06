@@ -21,4 +21,5 @@ class voice_processer:
 def say(line):
     engine = pyttsx3.init()
     engine.say(line)
+    print(line)
     engine.runAndWait()
