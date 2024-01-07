@@ -3,7 +3,10 @@ from .voice_helper import *
 from collections import defaultdict
 
 def execute_command(cmd, input_line, cart):
-    if cmd == '%close%':
+    if cmd == '%introduce%':
+        say("我是購物助理")
+        
+    elif cmd == '%close%':
         say("好挖再見")
         exit()
         
@@ -147,10 +150,10 @@ def get_product_name(sentence):
     match = re.search(r'(知道|目前|需要知道)([\u4e00-\u9fa5]+)(的價格|占多少錢)', sentence)
     if match:
         return match.group(2)
-    match = re.search(r'告訴我?([\u4e00-\u9fa5]+)(總共花了多少錢|花了多少錢|的價格|一共花了多少錢)', sentence)
+    match = re.search(r'告訴我?([\u4e00-\u9fa5]+)(花了多少|總共花了多少錢|花了多少錢|的價格|一共花了多少錢)', sentence)
     if match:
         return match.group(1)
-    match = re.search(r'([\u4e00-\u9fa5]+)(總共花了多少錢|花了多少錢|的價格|一共花了多少錢)', sentence)
+    match = re.search(r'([\u4e00-\u9fa5]+)(花了多少|總共花了多少錢|花了多少錢|的價格|一共花了多少錢)', sentence)
     if match:
         return match.group(1)
     match = re.search(r'(我買了多少錢)([\u4e00-\u9fa5]+)', sentence)
